@@ -12,18 +12,34 @@ export const validateMid = ({
     params?: AnyZodObject
     query?: AnyZodObject
 }) => {
-    const schema = z.object({
-        body: body || z.object({}),
-        params: params || z.object({}),
-        query: query || z.object({}),
-    }) as AnyZodObject
+    const schemaFields: Record<string, ZodTypeAny> = {}
+
+    if (body !== undefined) {
+        schemaFields.body = body
+    }
+    if (params !== undefined) {
+        schemaFields.params = params
+    }
+    if (query !== undefined) {
+        schemaFields.query = query
+    }
+
+    const schema = z.object(schemaFields) as AnyZodObject
     return (req: Request, res: Response, next: NextFunction) => {
         try {
-            const reqObjCk = schema.safeParse({
-                body: req.body,
-                query: req.query,
-                params: req.params,
-            })
+            const validationData: Record<string, any> = {}
+
+            if (body !== undefined) {
+                validationData.body = req.body
+            }
+            if (params !== undefined) {
+                validationData.params = req.params
+            }
+            if (query !== undefined) {
+                validationData.query = req.query
+            }
+
+            const reqObjCk = schema.safeParse(validationData)
             if (reqObjCk.success) {
                 return next()
             }

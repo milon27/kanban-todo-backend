@@ -1,6 +1,8 @@
+import { relations } from "drizzle-orm"
 import { datetime, int, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core"
 import { user } from "./auth.schema"
 import { CategorySchema } from "./category.schema"
+import { TaskHistorySchema } from "./task-history.schema"
 
 export const TaskSchema = mysqlTable("task", {
     id: int("id").autoincrement().primaryKey(),
@@ -22,6 +24,18 @@ export const TaskSchema = mysqlTable("task", {
     position: int("position").notNull(), // 100,200...
     createdAt: timestamp("created_at").defaultNow(),
 })
+
+export const TaskRelations = relations(TaskSchema, ({ one, many }) => ({
+    category: one(CategorySchema, {
+        fields: [TaskSchema.categoryId],
+        references: [CategorySchema.id],
+    }),
+    user: one(user, {
+        fields: [TaskSchema.userId],
+        references: [user.id],
+    }),
+    history: many(TaskHistorySchema),
+}))
 
 export type ITask = typeof TaskSchema.$inferSelect
 export type ICreateTask = typeof TaskSchema.$inferInsert
