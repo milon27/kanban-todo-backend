@@ -15,6 +15,13 @@
       "when": 1756479387586,
       "tag": "0001_freezing_kingpin",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1756481401690,
+      "tag": "0002_keen_morlun",
+      "breakpoints": true
     }
   ]
 }
