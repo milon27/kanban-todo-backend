@@ -1,5 +1,6 @@
 import { ErrorRequestHandler, NextFunction, Request, Response } from "express"
 import { ErrorCode, StatusCode } from "../config/constants/code.constant"
+import { ServerError } from "../types/error.type"
 import { MyErrorResponse } from "../utils/my-response.util"
 
 export const notFoundMid = (_req: Request, res: Response, next: NextFunction) => {
@@ -10,9 +11,14 @@ export const notFoundMid = (_req: Request, res: Response, next: NextFunction) =>
     }
 }
 
-export const globalErrorMid = (err: ErrorRequestHandler, _req: Request, res: Response, _next: NextFunction) => {
-    console.error("globalErrorMid: ", err)
-    return res
-        .status(StatusCode.SERVER_ERROR)
-        .json(MyErrorResponse(ErrorCode.SERVER_ERROR, (err as unknown as Error).message))
+export const globalErrorMid = (e: ErrorRequestHandler, _req: Request, res: Response, _next: NextFunction) => {
+    console.error("globalErrorMid: ", e)
+    if (e instanceof ServerError) {
+        return res.status(e.statusCode).json(MyErrorResponse(e.errorCode, (e as Error).message))
+    }
+    const error = e as unknown as Error
+    let code = ErrorCode.SERVER_ERROR
+    let statusCode = StatusCode.SERVER_ERROR
+    let errorMessage = error.message
+    return res.status(statusCode).json(MyErrorResponse(code, errorMessage))
 }

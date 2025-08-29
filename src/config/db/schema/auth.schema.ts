@@ -16,6 +16,8 @@ export const user = mysqlTable("user", {
         .notNull(),
 })
 
+export type IUser = typeof user.$inferSelect
+
 export const session = mysqlTable("session", {
     id: varchar("id", { length: 36 }).primaryKey(),
     expiresAt: timestamp("expires_at").notNull(),

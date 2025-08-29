@@ -10,7 +10,7 @@ importers:
     dependencies:
       better-auth:
         specifier: ^1.3.7
-        version: 1.3.7(zod@4.1.5)
+        version: 1.3.7(zod@3.25.70)
       cookie-parser:
         specifier: ^1.4.7
         version: 1.4.7
@@ -30,8 +30,8 @@ importers:
         specifier: ^3.14.3
         version: 3.14.3
       zod:
-        specifier: ^4.1.5
-        version: 4.1.5
+        specifier: 3.25.70
+        version: 3.25.70
     devDependencies:
       '@types/cookie-parser':
         specifier: ^1.4.9
@@ -999,8 +999,8 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  zod@4.1.5:
-    resolution: {integrity: sha512-rcUUZqlLJgBC33IT3PNMgsCq6TzLQEG/Ei/KTCU0PedSWRMAXoOUN+4t/0H+Q8bdnLPdqUYnvboJT0bn/229qg==}
+  zod@3.25.70:
+    resolution: {integrity: sha512-2WWzL2X2GpPU6as2xK1HFb6U5BZdJMdpB5Qtlan4a1KLYcZ6Gvox+mqZpxOd66sfe5AP3pEWpd2BC3f0yLH/nQ==}
 
 snapshots:
 
@@ -1287,7 +1287,7 @@ snapshots:
 
   aws-ssl-profiles@1.1.2: {}
 
-  better-auth@1.3.7(zod@4.1.5):
+  better-auth@1.3.7(zod@3.25.70):
     dependencies:
       '@better-auth/utils': 0.2.6
       '@better-fetch/fetch': 1.1.18
@@ -1300,7 +1300,7 @@ snapshots:
       jose: 5.10.0
       kysely: 0.28.5
       nanostores: 0.11.4
-      zod: 4.1.5
+      zod: 3.25.70
 
   better-call@1.0.16:
     dependencies:
@@ -1804,4 +1804,4 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-  zod@4.1.5: {}
+  zod@3.25.70: {}

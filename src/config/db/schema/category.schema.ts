@@ -6,5 +6,6 @@ export const CategorySchema = mysqlTable("category", {
     title: varchar("title", { length: 100 }).notNull(), // "To Do", "In Progress"
     createdAt: timestamp("created_at").defaultNow(),
 })
+
 export type ICategory = typeof CategorySchema.$inferSelect
 export type ICreateCategory = typeof CategorySchema.$inferInsert
