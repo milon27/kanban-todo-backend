@@ -7,3 +7,7 @@ export const CreateCategoryDto = z.object({
 })
 
 export type ICreateCategoryDto = z.infer<typeof CreateCategoryDto>
+
+export const UpdateCategoryDto = CreateCategoryDto
+
+export type IUpdateCategoryDto = z.infer<typeof UpdateCategoryDto>

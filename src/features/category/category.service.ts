@@ -1,6 +1,7 @@
+import { eq } from "drizzle-orm"
 import { db } from "../../config/db/db.config"
 import { CategorySchema } from "../../config/db/schema"
-import { ICreateCategoryDto } from "./dto/category.dto"
+import { ICreateCategoryDto, IUpdateCategoryDto } from "./dto/category.dto"
 
 export const CategoryService = {
     getAll: async () => {
@@ -12,5 +13,8 @@ export const CategoryService = {
             title: dto.title,
         })
         return category
+    },
+    update: async (id: number, dto: IUpdateCategoryDto) => {
+        await db.update(CategorySchema).set({ title: dto.title }).where(eq(CategorySchema.id, id))
     },
 }
