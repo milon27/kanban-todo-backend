@@ -8,6 +8,13 @@
       "when": 1756478520836,
       "tag": "0000_mean_baron_zemo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1756479387586,
+      "tag": "0001_freezing_kingpin",
+      "breakpoints": true
     }
   ]
 }

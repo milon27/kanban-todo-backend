@@ -1,7 +1,9 @@
+import { toNodeHandler } from "better-auth/node"
 import cookieParser from "cookie-parser"
 import cors from "cors"
 import "dotenv/config"
 import express from "express"
+import { auth } from "./config/auth/auth"
 import v1Router from "./config/router/router.config"
 import { globalErrorMid, notFoundMid } from "./middleware/error.mid"
 
@@ -15,6 +17,7 @@ app.use(express.json())
 app.use(cors({ origin: true, credentials: true }))
 
 // routers
+app.all("/api/auth/{*any}", toNodeHandler(auth))
 app.use("/v1", v1Router)
 
 // global error handle

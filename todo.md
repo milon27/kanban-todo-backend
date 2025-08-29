@@ -12,3 +12,8 @@ npx tsc --init
 - https://orm.drizzle.team/docs/get-started/mysql-new
 - https://orm.drizzle.team/docs/get-started-mysql
 - https://orm.drizzle.team/docs/sql-schema-declaration
+
+3. setup better auth
+
+- https://www.better-auth.com/docs/installation
+- npx @better-auth/cli generate --config src/config/auth/auth.ts
