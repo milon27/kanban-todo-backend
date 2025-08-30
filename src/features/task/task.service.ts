@@ -1,6 +1,6 @@
-import { and, asc, desc, eq } from "drizzle-orm"
+import { and, asc, desc, eq, gte, not, sql } from "drizzle-orm"
 import { db } from "../../config/db/db.config"
-import { CategorySchema, ICreateTask, TaskHistorySchema, TaskSchema } from "../../config/db/schema"
+import { ICreateTask, TaskHistorySchema, TaskSchema } from "../../config/db/schema"
 import { ICreateTaskDto, IMoveTaskDto, IUpdateTaskDto } from "./dto/task.dto"
 
 export const TaskService = {
@@ -12,14 +12,7 @@ export const TaskService = {
             },
             orderBy: [asc(TaskSchema.position)],
         })
-        const columns = await db.query.CategorySchema.findMany({
-            orderBy: [asc(CategorySchema.createdAt)],
-        })
-        const response = {
-            columns,
-            tasks,
-        }
-        return response
+        return tasks
     },
 
     getById: async (id: number, userId: string) => {
@@ -79,6 +72,7 @@ export const TaskService = {
     },
 
     move: async (id: number, dto: IMoveTaskDto, userId: string) => {
+        console.log(JSON.stringify(dto, null, 2))
         // Get current task that we want to move
         const currentTask = await db.query.TaskSchema.findFirst({
             where: and(eq(TaskSchema.id, id), eq(TaskSchema.userId, userId)),
@@ -97,6 +91,20 @@ export const TaskService = {
                     position: dto.position,
                 })
                 .where(and(eq(TaskSchema.id, id), eq(TaskSchema.userId, userId)))
+
+            await tx
+                .update(TaskSchema)
+                .set({
+                    position: sql`${TaskSchema.position} + 1`,
+                })
+                .where(
+                    and(
+                        gte(TaskSchema.position, dto.position),
+                        eq(TaskSchema.categoryId, dto.categoryId),
+                        eq(TaskSchema.userId, userId),
+                        not(eq(TaskSchema.id, id))
+                    )
+                )
 
             // Create task history for the move
             await tx.insert(TaskHistorySchema).values({
