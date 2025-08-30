@@ -1,0 +1,2 @@
+ALTER TABLE `category` ADD `user_id` varchar(36) NOT NULL;--> statement-breakpoint
+ALTER TABLE `category` ADD CONSTRAINT `category_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE cascade;

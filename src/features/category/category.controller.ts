@@ -16,7 +16,8 @@ export const CategoryController = {
     },
     create: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            await CategoryService.create(req.body as ICreateCategoryDto)
+            const userId = req.user.id
+            await CategoryService.create(userId, req.body as ICreateCategoryDto)
             return res.status(StatusCode.OK).send(MyResponse(`created category or column`))
         } catch (error) {
             return next(error)
@@ -25,8 +26,9 @@ export const CategoryController = {
     update: async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { id } = req.params as unknown as IIdNumParamDto
+             const userId = req.user.id
             const data = req.body as IUpdateCategoryDto
-            await CategoryService.update(Number(id), data)
+            await CategoryService.update(Number(id), userId, data)
             return res.status(StatusCode.OK).send(MyResponse(`updated category or column`))
         } catch (error) {
             return next(error)
