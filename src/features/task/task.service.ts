@@ -1,6 +1,6 @@
 import { and, asc, desc, eq } from "drizzle-orm"
 import { db } from "../../config/db/db.config"
-import { ICreateTask, TaskHistorySchema, TaskSchema } from "../../config/db/schema"
+import { CategorySchema, ICreateTask, TaskHistorySchema, TaskSchema } from "../../config/db/schema"
 import { ICreateTaskDto, IMoveTaskDto, IUpdateTaskDto } from "./dto/task.dto"
 
 export const TaskService = {
@@ -12,7 +12,14 @@ export const TaskService = {
             },
             orderBy: [asc(TaskSchema.position)],
         })
-        return tasks
+        const columns = await db.query.CategorySchema.findMany({
+            orderBy: [asc(CategorySchema.createdAt)],
+        })
+        const response = {
+            columns,
+            tasks,
+        }
+        return response
     },
 
     getById: async (id: number, userId: string) => {
@@ -20,6 +27,9 @@ export const TaskService = {
             where: and(eq(TaskSchema.id, id), eq(TaskSchema.userId, userId)),
             with: {
                 category: true,
+                history: {
+                    orderBy: [desc(TaskHistorySchema.createdAt)],
+                },
             },
         })
         return task
@@ -53,10 +63,19 @@ export const TaskService = {
         if (dto.expireDate !== undefined) updateData.expireDate = dto.expireDate ? new Date(dto.expireDate) : null
         if (dto.position !== undefined) updateData.position = dto.position
 
-        await db
-            .update(TaskSchema)
-            .set(updateData)
-            .where(and(eq(TaskSchema.id, id), eq(TaskSchema.userId, userId)))
+        await db.transaction(async (tx) => {
+            // Update task position and category
+            await db
+                .update(TaskSchema)
+                .set(updateData)
+                .where(and(eq(TaskSchema.id, id), eq(TaskSchema.userId, userId)))
+
+            // Create task history for the update
+            await tx.insert(TaskHistorySchema).values({
+                taskId: id,
+                action: "modified",
+            })
+        })
     },
 
     move: async (id: number, dto: IMoveTaskDto, userId: string) => {
@@ -69,21 +88,23 @@ export const TaskService = {
             throw new Error("Task not found")
         }
 
-        // Update task position and category
-        await db
-            .update(TaskSchema)
-            .set({
-                categoryId: dto.categoryId,
-                position: dto.position,
-            })
-            .where(and(eq(TaskSchema.id, id), eq(TaskSchema.userId, userId)))
+        await db.transaction(async (tx) => {
+            // Update task position and category
+            await tx
+                .update(TaskSchema)
+                .set({
+                    categoryId: dto.categoryId,
+                    position: dto.position,
+                })
+                .where(and(eq(TaskSchema.id, id), eq(TaskSchema.userId, userId)))
 
-        // Create task history for the move
-        await db.insert(TaskHistorySchema).values({
-            taskId: id,
-            fromCategoryId: currentTask.categoryId,
-            toCategoryId: dto.categoryId,
-            action: "moved",
+            // Create task history for the move
+            await tx.insert(TaskHistorySchema).values({
+                taskId: id,
+                fromCategoryId: currentTask.categoryId,
+                toCategoryId: dto.categoryId,
+                action: "moved",
+            })
         })
     },
 

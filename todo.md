@@ -17,3 +17,5 @@ npx tsc --init
 
 - https://www.better-auth.com/docs/installation
 - npx @better-auth/cli generate --config src/config/auth/auth.ts
+
+<!-- how to assign the points automatically -->
