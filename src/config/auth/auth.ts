@@ -16,4 +16,5 @@ export const auth = betterAuth({
     plugins: [
         openAPI(), // http://localhost:4000/api/auth/reference
     ],
+    trustedOrigins: ["http://localhost:3000"],
 })
