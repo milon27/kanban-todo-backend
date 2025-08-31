@@ -1,0 +1,2 @@
+ALTER TABLE `task_history` ADD CONSTRAINT `task_history_from_category_id_category_id_fk` FOREIGN KEY (`from_category_id`) REFERENCES `category`(`id`) ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE `task_history` ADD CONSTRAINT `task_history_to_category_id_category_id_fk` FOREIGN KEY (`to_category_id`) REFERENCES `category`(`id`) ON DELETE cascade ON UPDATE cascade;

@@ -185,7 +185,7 @@ export const TaskService = {
     getTaskHistory: async (id: number, userId: string) => {
         // First verify the task belongs to the user
         const task = await db.query.TaskSchema.findFirst({
-            where: and(eq(TaskSchema.id, id), eq(TaskSchema.userId, userId)),
+            columns: { id: true },
         })
 
         if (!task) {
@@ -194,9 +194,22 @@ export const TaskService = {
 
         const history = await db.query.TaskHistorySchema.findMany({
             where: eq(TaskHistorySchema.taskId, id),
+            with: {
+                task: true,
+                fromCategory: true,
+                toCategory: true,
+            },
             orderBy: [desc(TaskHistorySchema.createdAt)],
         })
 
-        return history
+        return history.map((h) => {
+            if (h.action === "created") {
+                return `Has been created on ${h.createdAt?.toLocaleDateString()}`
+            }
+            if (h.action === "modified") {
+                return `Has been modified on ${h.createdAt?.toLocaleDateString()}`
+            }
+            return `Has been ${h.action} from "${h.fromCategory?.title}" to "${h.toCategory?.title}" on ${h.createdAt?.toLocaleDateString()}`
+        })
     },
 }

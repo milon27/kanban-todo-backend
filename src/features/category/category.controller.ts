@@ -8,7 +8,7 @@ import { ICreateCategoryDto, IUpdateCategoryDto } from "./dto/category.dto"
 export const CategoryController = {
     getAll: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const list = await CategoryService.getAll()
+            const list = await CategoryService.getAll(req.user.id)
             return res.status(StatusCode.OK).send(MyResponse(`get all category or column`, list))
         } catch (error) {
             return next(error)
@@ -26,7 +26,7 @@ export const CategoryController = {
     update: async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { id } = req.params as unknown as IIdNumParamDto
-             const userId = req.user.id
+            const userId = req.user.id
             const data = req.body as IUpdateCategoryDto
             await CategoryService.update(Number(id), userId, data)
             return res.status(StatusCode.OK).send(MyResponse(`updated category or column`))
